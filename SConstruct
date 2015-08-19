@@ -5,7 +5,11 @@ outputfile = 'sdfont'
 env = Environment()
 env.Append(CCFLAGS = ['-g3'])
 env.Append(LIBS = ['freetype'])
-env.Append(CPPPATH = ['/usr/include/freetype2'])
+if env['PLATFORM'] == 'darwin':
+	env.Append(CPPPATH = ['/opt/local/include/freetype2'])
+	env.Append(LIBPATH = ['/opt/local/lib'])
+else:
+	env.Append(CPPPATH = ['/usr/include/freetype2'])
 
 list = Split("""main.cpp
 	stb_image.c
