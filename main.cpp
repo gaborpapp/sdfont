@@ -77,6 +77,7 @@ int load_glyph(
 //	number of rendered pixels per SDF pixel
 const int scaler = 16;
 //	(larger value means higher quality, up to a point)
+int padding = 0;
 
 int main( int argc, char **argv )
 {
@@ -369,6 +370,12 @@ bool render_signed_distance_font(
 		}
 	}
 
+
+	padding = 0;
+	printf( "Set padding around characters in texture.\n" );
+	scanf( "%i", &padding );
+	printf( "\n" );
+
 	//	find the perfect size
 	printf( "\nDetermining ideal font pixel size: " );
 	std::vector< sdf_glyph > all_glyphs;
@@ -433,8 +440,9 @@ bool render_signed_distance_font(
 		int p = ft_face->glyph->bitmap.pitch;
 
 		//	oversize the holding buffer so I can smooth it!
-		int sw = w + scaler * 8; // * 4;
-		int sh = h + scaler * 8; // * 4;
+		int oversize = 8;
+		int sw = w + scaler * oversize; // * 4;
+		int sh = h + scaler * oversize; // * 4;
 		unsigned char *smooth_buf = new unsigned char[sw * sh];
 		for( int i = 0; i < sw * sh; ++i )
 		{
@@ -448,7 +456,7 @@ bool render_signed_distance_font(
 			for( int i = 0; i < w; ++i )
 			{
 				int value = 255 * ((buf[j * p + (i>>3)] >> (7 - (i & 7))) & 1);
-				smooth_buf[i + scaler*2 + (j + scaler*2) * sw] = value;
+				smooth_buf[i + scaler*(oversize/2) + (j + scaler*(oversize/2)) * sw] = value;
 			}
 		}
 
@@ -760,8 +768,8 @@ bool gen_pack_list(
 		//	do the SDF
 		int sdfw = sw / scaler;
 		int sdfh = sh / scaler;
-		rectangle_info.push_back( sdfw );
-		rectangle_info.push_back( sdfh );
+		rectangle_info.push_back( sdfw + padding );
+		rectangle_info.push_back( sdfh + padding );
 		//	add in the data I already know
 		add_me.ID = render_list[char_index];
 		add_me.width = sdfw;
