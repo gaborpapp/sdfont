@@ -435,7 +435,7 @@ bool render_signed_distance_font(
 		//	oversize the holding buffer so I can smooth it!
 		int sw = w + scaler * 8; // * 4;
 		int sh = h + scaler * 8; // * 4;
-		unsigned char smooth_buf[sw * sh];
+		unsigned char *smooth_buf = new unsigned char[sw * sh];
 		for( int i = 0; i < sw * sh; ++i )
 		{
 			smooth_buf[i] = 0;
@@ -473,6 +473,7 @@ bool render_signed_distance_font(
 				pdata[pd_idx+3] = pdata[pd_idx];
 			}
 		}
+		delete [] smooth_buf;
 		++packed_glyph_index;
 	}
 	tin = clock() - tin;
