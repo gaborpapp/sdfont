@@ -1,0 +1,11 @@
+.DS_Store
+.sconsign.dblite
+
+*.sw[a-z]
+*.o
+
+*.png
+*.txt
+
+sdfont
+
